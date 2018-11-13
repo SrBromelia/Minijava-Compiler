@@ -6,13 +6,14 @@ import Parser.sym;
 import Scanner.scanner;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
+import java.io.FileReader;
 
 public class Minijava {
 	public static void main(String[] args) {
 		try {
             // create a scanner on the input file
             ComplexSymbolFactory sf = new ComplexSymbolFactory();
-            Reader in = new BufferedReader(new InputStreamReader(System.in));
+            Reader in = new BufferedReader(new FileReader("SamplePrograms/Example2.java"));
             scanner s = new scanner(in, sf);
             Symbol t = s.next_token();
             while (t.sym != sym.EOF){ 
