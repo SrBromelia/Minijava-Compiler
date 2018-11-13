@@ -96,6 +96,10 @@ import Parser.sym;
        return "ID(" + (String)cs.value + ")";
      } else if (cs.sym == sym.error) {
        return "<UNEXPECTED(" + (String)cs.value + ")>";
+     } else if (cs.sym == sym.NUMBER) {
+       return "NUMBER(" + (String)cs.value + ")";
+     } else if (cs.sym == sym.TYPE) {
+       return "TYPE(" + (String)cs.value + ")";
      } else {
        return cs.getName();
      }
@@ -113,17 +117,28 @@ white = {eol}|[ \t]
 /* Token definitions */
 
 /* reserved words (first so that they take precedence over identifiers) */
-"display" { return symbol(sym.DISPLAY); }
 "class" { return symbol(sym.CLASS); }
 "public static void main" { return symbol(sym.MAIN); }
 "String" { return symbol(sym.STRING); }
+"System.out.println" { return symbol(sym.SYSO); }
+"return" { return symbol(sym.RETURN); }
+"if" { return symbol(sym.IF); }
+"else" { return symbol(sym.ELSE); }
+"while" { return symbol(sym.WHILE); }
+"new" { return symbol(sym.NEW); }
+"this" { return symbol(sym.THIS); }
+"public" { return symbol(sym.PUBLIC); }
+"int" { return symbol(sym.INT); }
+"boolean" { return symbol(sym.BOOLEAN); }
 
 /* operators */
 "+" { return symbol(sym.PLUS); }
 "-" { return symbol(sym.MINUS); }
 "*" { return symbol(sym.MULTI); }
-"/" { return symbol(sym.DIV); }
 "=" { return symbol(sym.BECOMES); }
+"&&" { return symbol(sym.AND); }
+"!" { return symbol(sym.NOT); }
+"<" { return symbol(sym.LTE); }
 
 /* delimiters */
 "(" { return symbol(sym.LPAREN); }
@@ -135,7 +150,7 @@ white = {eol}|[ \t]
 ";" { return symbol(sym.SEMICOLON); }
 
 /* number */
-0|[1-9]{digit}* {
+(\+|\-)?0|[1-9]{digit}* {
 	return symbol(sym.NUMBER, yytext());
 }
 
@@ -146,9 +161,21 @@ white = {eol}|[ \t]
 
 /* comment */
 "//" { /* ignore comments */ }
+"/*"[^*/]"*/" { /* ignore comments */ }
 
 /* whitespace */
 {white}+ { /* ignore whitespace */ }
+
+/* beyond-of-scope handling */
+"."{digit}* {
+    System.err.printf("%nLine %d, Column %d", yyline+1,yycolumn+1);
+    System.err.printf("%nWarning:Minijava does not support floating-point numbers.%n");
+}
+
+\"[^\".]*\" {
+  System.err.printf("%nLine %d, Column %d", yyline+1,yycolumn+1);
+  System.err.printf("%nWarning:Minijava does not support Strings.%n");
+}
 
 /* lexical errors (last so other matches take precedence) */
 . {

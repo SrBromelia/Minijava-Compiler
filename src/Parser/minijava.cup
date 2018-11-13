@@ -14,10 +14,11 @@ import java_cup.runtime.*;
 /* Terminals (lexical tokens returned by the scanner): */
 
 /* reserved words */
-terminal DISPLAY, CLASS, MAIN, STRING;
+terminal CLASS, MAIN, STRING, TYPE, SYSO, RETURN, THIS, NEW, IF, ELSE, WHILE, NOT, PUBLIC, INT, BOOLEAN;
 
 /* operators */
-terminal PLUS, MINUS, MULTI, DIV, BECOMES;
+terminal PLUS, MINUS, MULTI, BECOMES;
+terminal AND, LTE;
 
 /* delimiters */
 terminal LPAREN, RPAREN, LBRACK, RBRACK, LBRACE, RBRACE, SEMICOLON;
@@ -35,10 +36,13 @@ terminal Boolean BOOL;
 nonterminal List<Statement> Program;
 nonterminal Statement Statement;
 nonterminal Assign AssignStatement;
-nonterminal Display DisplayStatement;
 nonterminal Exp Expression;
 nonterminal Identifier Identifier;
-
+nonterminal MainClass MainClass;
+nonterminal CLasssDecl ClassDeclaration;
+nonterminal VarDecl VarDeclaration;
+nonterminal MethodDecl METHOD_DECLARATION;
+nonterminal Type VARTYPE;
 
 /* Precedence declarations: */
 
@@ -53,11 +57,9 @@ Program ::= Statement:s
                RESULT = p; :}
         | Program:p Statement:s
             {: p.add(s); RESULT = p; :};
-/*MainClass ::= CLASS IDENTFIER:class LBRACE MAIN LPAREN STRING LBRACK RBRACK IDENTIFIER:args*/
+/*MainClass ::= CLASS IDENTFIER:class LBRACE MAIN LPAREN STRING LBRACK RBRACK IDENTIFIER:args;*/
 
 Statement   ::= AssignStatement:s
-                {: RESULT = s; :}
-            | DisplayStatement:s
                 {: RESULT = s; :};
 
 AssignStatement ::= Identifier:id BECOMES Expression:expr SEMICOLON
@@ -65,9 +67,6 @@ AssignStatement ::= Identifier:id BECOMES Expression:expr SEMICOLON
 
 Identifier  ::= IDENTIFIER:id
                 {: RESULT = new Identifier(id, idxleft); :};
-
-DisplayStatement ::= DISPLAY:d Expression:expr SEMICOLON
-                     {: RESULT = new Display(expr, dxleft); :};
 
 Expression    ::= IDENTIFIER:name
             {: RESULT = new IdentifierExp(name, namexleft); :}

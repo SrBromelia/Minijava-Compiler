@@ -17,8 +17,10 @@ public class Minijava {
             Symbol t = s.next_token();
             while (t.sym != sym.EOF){ 
                 // print each token that we scan
-                System.out.print(s.symbolToString(t) + " ");
-                if(s.symbolToString(t) == "SEMICOLON")
+            	String out = s.symbolToString(t);
+                System.out.print(out + " ");
+                if(out.equals("SEMICOLON") ||
+                   out.equals("LBRACE"))
                 	System.out.println("");
                 t = s.next_token();
             }
