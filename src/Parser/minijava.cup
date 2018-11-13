@@ -41,8 +41,8 @@ nonterminal Identifier Identifier;
 nonterminal MainClass MainClass;
 nonterminal CLasssDecl ClassDeclaration;
 nonterminal VarDecl VarDeclaration;
-nonterminal MethodDecl METHOD_DECLARATION;
-nonterminal Type VARTYPE;
+nonterminal MethodDecl MethodDeclaration;
+nonterminal Type Type;
 
 /* Precedence declarations: */
 
