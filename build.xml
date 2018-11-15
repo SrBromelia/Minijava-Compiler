@@ -91,7 +91,7 @@
     </java>
   </target>
   <target name="minijava" depends="compile">
-	<java classname="Minijava" classpath="build/classes:lib/java-cup-11b.jar"
+	  <java classname="Minijava" classpath="build/classes:lib/java-cup-11b.jar"
   	      fork="true"
 		  input="SamplePrograms/Example.java">
 	  <assertions> <enable/> </assertions>

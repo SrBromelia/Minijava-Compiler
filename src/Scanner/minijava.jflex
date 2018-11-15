@@ -172,7 +172,7 @@ white = {eol}|[ \t]
     System.err.printf("%nWarning:Minijava does not support floating-point numbers.%n");
 }
 
-\"[^\".]*\" {
+"\""[^"\"".]"\"" {
   System.err.printf("%nLine %d, Column %d", yyline+1,yycolumn+1);
   System.err.printf("%nWarning:Minijava does not support Strings.%n");
 }
