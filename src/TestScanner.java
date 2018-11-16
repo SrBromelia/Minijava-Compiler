@@ -15,8 +15,6 @@ public class TestScanner {
             while (t.sym != sym.EOF){ 
                 // print each token that we scan
                 System.out.print(s.symbolToString(t) + " ");
-                if(s.symbolToString(t) == "SEMICOLON")
-                	System.out.println("");
                 t = s.next_token();
             }
             System.out.print("\nLexical analysis completed"); 

@@ -90,11 +90,14 @@
       <assertions> <enable/> </assertions>
     </java>
   </target>
+
   <target name="minijava" depends="compile">
-	  <java classname="Minijava" classpath="build/classes:lib/java-cup-11b.jar"
-  	      fork="true"
-		  input="SamplePrograms/Example.java">
-	  <assertions> <enable/> </assertions>
-	 </java>
+    <java classname="Minijava" classpath="build/classes:lib/java-cup-11b.jar"
+          fork="true">
+            <arg value="${arg0}"/>
+            <arg value="${arg1}"/>
+      <assertions> <enable/> </assertions>
+   </java>
   </target>
+
 </project>
