@@ -96,9 +96,9 @@ import Parser.sym;
      {
        return "ID(" + (String)cs.value + ")";
      }
-     else if (cs.sym == sym.NUMBER)
+     else if (cs.sym == sym.INTEGER)
      {
-       return "NUMBER(" + (String)cs.value + ")";
+       return "INTEGER(" + String.valueOf(cs.value) + ")";
      }
      else if (cs.sym == sym.error)
      {
@@ -157,7 +157,7 @@ white = {eol}|[ \t]
 
 /* number */
 (\+|\-)?0|[1-9]{digit}* {
-  return symbol(sym.NUMBER, yytext());
+  return symbol(sym.INTEGER, Integer.parseInt(yytext()));
 }
 
 /* identifiers */

@@ -28,7 +28,7 @@ terminal LPAREN, RPAREN, LBRACK, RBRACK, LBRACE, RBRACE, SEMICOLON;
 terminal String IDENTIFIER;
 
 /* values */
-terminal Integer NUMBER;
+terminal Integer INTEGER;
 terminal Boolean BOOL;
 
 
@@ -40,6 +40,8 @@ nonterminal Assign AssignStatement;
 nonterminal Display DisplayStatement;
 nonterminal Exp Expression;
 nonterminal Identifier Identifier;
+nonterminal MainClass MainClass;
+nonterminal StatementList StatementList;
 
 
 /* Precedence declarations: */
@@ -49,13 +51,27 @@ precedence left PLUS;
 
 /* Productions: */
 
-start with Program;
+start with MainClass;
 
 Program ::= Statement:s
             {: List<Statement> p = new LinkedList<Statement>();
                p.add(s);
                RESULT = p; :}
         | Program:p Statement:s
+            {: p.add(s); RESULT = p; :};
+
+MainClass ::= CLASS IDENTIFIER:a LBRACE
+              PUBLIC MAIN LPAREN STRING LBRACK RBRACK IDENTIFIER:b RPAREN
+              LBRACE Statement:s RBRACE RBRACE
+            {:  Identifier cl = new Identifier(a,axleft);
+                Identifier ag = new Identifier(b,bxleft);
+                RESULT = new MainClass(cl, ag, s, axleft); :};
+
+StatementList ::= Statement:s
+            {: StatementList p = new StatementList(sxleft);
+               p.add(s);
+               RESULT = p; :}
+        | StatementList:p Statement:s
             {: p.add(s); RESULT = p; :};
 
 Statement   ::= AssignStatement:s
@@ -74,6 +90,8 @@ DisplayStatement ::= DISPLAY:d Expression:expr SEMICOLON
 
 Expression    ::= IDENTIFIER:name
             {: RESULT = new IdentifierExp(name, namexleft); :}
+        | INTEGER:integer
+            {: RESULT = new IntegerLiteral(integer, integerxleft); :}
         | Expression:arg1 PLUS Expression:arg2
             {: RESULT = new Plus(arg1, arg2, arg1xleft); :}
         | LPAREN Expression:expr RPAREN
