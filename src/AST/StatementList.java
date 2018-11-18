@@ -12,6 +12,11 @@ public class StatementList extends ASTNode {
       list = new ArrayList<Statement>();
    }
 
+   public StatementList() {
+      super();
+      list = new ArrayList<Statement>();
+   }
+
    public void add(Statement n) {
       list.add(n);
    }

@@ -15,7 +15,7 @@ import java_cup.runtime.*;
 
 /* reserved words */
 terminal DISPLAY;
-terminal TYPE, SYSO, RETURN, THIS, NEW, IF, ELSE, WHILE, NOT, INT, BOOLEAN, LENGTH, DOT;
+terminal SYSO, RETURN, THIS, NEW, IF, ELSE, WHILE, NOT, INT, BOOLEAN, LENGTH, DOT;
 terminal CLASS, MAIN, STRING, PUBLIC, EXTENDS;
 /* operators */
 terminal PLUS, MINUS, TIMES, BECOMES;
@@ -68,7 +68,7 @@ precedence left TIMES;
 
 /* Productions: */
 
-start with MainClass;
+start with Program;
 
 Program ::= MainClass:mc ClassDeclList:cdl
             {: RESULT = new Program(mc,cdl,mcxleft); :};
@@ -88,12 +88,14 @@ ClassDeclList ::=
 
 ClassDecl ::= CLASS IDENTIFIER:a LBRACE VarDeclList:vdl MethodDeclList:mdl RBRACE
             {: Identifier cl = new Identifier(a,axleft);
-               RESULT = new ClassDeclSimple(cl, vdl,mdl,axleft); :};
+               RESULT = new ClassDeclSimple(cl, vdl,mdl,axleft); :}
+        | CLASS Identifier:a EXTENDS Identifier:b LBRACE VarDeclList:vdl MethodDeclList:mdl RBRACE
+            {: RESULT = new ClassDeclExtends(a,b,vdl,mdl,axleft); :};
 
 VarDeclList ::=
             {: VarDeclList vdl = new VarDeclList();
                RESULT = vdl; :}
-        | VarDeclList:vdl VarDecl:vd
+        | VarDeclList:vdl VarDecl:vd SEMICOLON
             {: vdl.add(vd);
                RESULT = vdl; :};
 
@@ -118,15 +120,19 @@ MethodDeclList ::=
                RESULT = mdl; :};
 
 MethodDecl ::= PUBLIC Type:t IDENTIFIER:a LPAREN FormalList:fl RPAREN LBRACE
-               VarDeclList:vdl StatementList:sl RETURN Expression:e SEMICOLON
+               VarDeclList:vdl StatementList:sl RETURN Expression:e SEMICOLON RBRACE
             {: Identifier m = new Identifier(a,axleft);
-               RESULT = new MethodDecl(t,m,fl,vdl,sl,e,txleft); :};
+               RESULT = new MethodDecl(t,m,fl,vdl,sl,e,txleft); :}
+        | PUBLIC:p Type:t IDENTIFIER:a LPAREN RPAREN LBRACE
+                VarDeclList:vdl StatementList:sl RETURN Expression:e SEMICOLON RBRACE
+            {:  Identifier m = new Identifier(a,axleft);
+                RESULT = new MethodDecl(t,m,new FormalList(), vdl, sl, e,pxleft); :};
 
 FormalList ::= Formal:f
             {: FormalList fl = new FormalList(fxleft);
                fl.add(f);
                RESULT = fl; :}
-        | FormalList:fl Formal:f
+        | FormalList:fl COMMA Formal:f
             {: fl.add(f);
                RESULT = fl; :};
 
@@ -134,19 +140,20 @@ Formal ::= Type:t IDENTIFIER:a
             {: Identifier id = new Identifier(a,axleft);
                RESULT = new Formal(t,id,txleft); :};
 
-StatementList ::= Statement:s
-            {: StatementList p = new StatementList(sxleft);
-               p.add(s);
+StatementList ::= 
+            {: StatementList p = new StatementList();
                RESULT = p; :}
-        | StatementList:p Statement:s
+        | Statement:s StatementList:p
             {: p.add(s); RESULT = p; :};
 
-Statement   ::= LBRACE StatementList:sl RBRACE
+Statement   ::= LBRACE StatementList:sl RBRACE //{Stmt}
                 {: RESULT = new Block(sl,slxleft); :}
-            | WHILE:w LPAREN Expression:e RPAREN Statement:s
+            | WHILE:w LPAREN Expression:e RPAREN Statement:s //while(Exp) Stmt
                 {: RESULT = new While(e,s,wxleft); :}
-            | SYSO LPAREN Expression:e RPAREN SEMICOLON
+            | SYSO LPAREN Expression:e RPAREN SEMICOLON //System.out.println(Exp);
                 {: RESULT = new Print(e,exleft); :}
+            | IF:iff LPAREN Expression:e RPAREN Statement:s_if ELSE Statement:s_else //if(Exp)Stmt else Stmt
+                {: RESULT = new If(e,s_if,s_else,iffxleft);  :}
             | AssignStatement:s
                 {: RESULT = s; :}
             | ArrayAssign:s
@@ -176,18 +183,26 @@ ExpressionList ::= Expression:e
 
 Expression ::= IDENTIFIER:name //id
             {: RESULT = new IdentifierExp(name, namexleft); :}
-        | TRUE:t
+        | TRUE:t //true
             {: RESULT = new True(txleft); :}
-        | FALSE:f
+        | FALSE:f //false
             {: RESULT = new False(fxleft); :}
-        | NOT Expression:e
+        | NOT Expression:e //!Exp
             {: RESULT = e; :}
-        | Expression:e DOT LENGTH
+        | THIS:t //This
+            {: RESULT = new This(txleft); :}
+        | NEW:n INT LBRACK Expression:e RBRACK //new int[INT]
+            {: RESULT = new NewArray(e,nxleft); :}
+        | NEW:n Identifier:id LPAREN RPAREN //new ID()
+            {: RESULT = new NewObject(id,nxleft); :}
+        | Expression:e DOT LENGTH //ID.length
             {: RESULT = new ArrayLength(e, exleft); :}
-        | Expression:e DOT Identifier:id LPAREN RPAREN
+        | Expression:e DOT Identifier:id LPAREN RPAREN // Exp.Id()
             {: RESULT = new Call(e,id,new ExpList(idxright),exleft); :}
-        | Expression:e DOT Identifier:id LPAREN ExpressionList:el RPAREN
+        | Expression:e DOT Identifier:id LPAREN ExpressionList:el RPAREN //Exp.Id(StmtL)
             {: RESULT = new Call(e,id,el,exleft); :}
+        | Expression:e1 LBRACK Expression:e2 RBRACK
+            {: RESULT = new ArrayLookup(e1,e2,e1xleft); :}
         | INTEGER:integer //int
             {: RESULT = new IntegerLiteral(integer, integerxleft); :}
         | Expression:arg1 PLUS Expression:arg2 //+

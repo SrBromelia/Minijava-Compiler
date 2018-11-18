@@ -12,6 +12,11 @@ public class FormalList extends ASTNode {
       list = new ArrayList<Formal>();
    }
 
+   public FormalList() {
+      super();
+      list = new ArrayList<Formal>();
+   }
+
    public void add(Formal n) {
       list.add(n);
    }

@@ -176,7 +176,7 @@ white = {eol}|[ \t]
 {white}+ { /* ignore whitespace */ }
 
 /* comments */
-"//"[^\n]\n { /* */ }
+"//"[^\n]*\n { /* */ }
 
 /* beyond-of-scope handling */
 "."{digit}* {

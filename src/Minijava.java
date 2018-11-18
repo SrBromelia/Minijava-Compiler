@@ -68,7 +68,10 @@ class Minijava
 	public static void callAST(String stream)
 	{
 		System.out.println("AST");
+	}
 
+	public static void callPrettyPrint(String stream)
+	{
 		try {
             // create a scanner on the input file
             ComplexSymbolFactory sf = new ComplexSymbolFactory();
@@ -76,10 +79,10 @@ class Minijava
             scanner s = new scanner(in, sf);
             parser p = new parser(s, sf);
             Symbol root;
-	    // replace p.parse() with p.debug_parse() in next line to see trace of
-	    // parser shift/reduce actions during parse
+        // replace p.parse() with p.debug_parse() in next line to see trace of
+        // parser shift/reduce actions during parse
             root = p.parse();
-            MainClass program = (MainClass)root.value;
+            Program program = (Program)root.value;
             program.accept(new PrettyPrintVisitor());
             System.out.println("\n");
             System.out.print("\nParsing completed"); 
@@ -91,11 +94,6 @@ class Minijava
             // print out a stack dump
             e.printStackTrace();
         }
-	}
-
-	public static void callPrettyPrint(String stream)
-	{
-		System.out.println("Pretty Print");
 	}
 
 	public static void callSemanticCheck(String stream)
