@@ -12,6 +12,11 @@ public class ExpList extends ASTNode{
       list = new ArrayList<Exp>();
    }
 
+   public ExpList() {
+      super();
+      list = new ArrayList<Exp>();
+   }
+
    public void add(Exp n) {
       list.add(n);
    }

@@ -124,6 +124,7 @@ white = {eol}|[ \t]
 /* reserved words (first so that they take precedence over identifiers) */
 "display" { return symbol(sym.DISPLAY); }
 "class" { return symbol(sym.CLASS); }
+"extends" {return symbol(sym.EXTENDS); }
 "static void main" { return symbol(sym.MAIN); }
 "String" { return symbol(sym.STRING); }
 "System.out.println" { return symbol(sym.SYSO); }
@@ -136,15 +137,19 @@ white = {eol}|[ \t]
 "public" { return symbol(sym.PUBLIC); }
 "int" { return symbol(sym.INT); }
 "boolean" { return symbol(sym.BOOLEAN); }
+"length" { return symbol(sym.LENGTH); }
+"true" {return symbol(sym.TRUE); }
+"false" {return symbol(sym.FALSE); }
 
 /* operators */
+"." { return symbol(sym.DOT); }
 "+" { return symbol(sym.PLUS); }
 "-" { return symbol(sym.MINUS); }
-"*" { return symbol(sym.MULTI); }
+"*" { return symbol(sym.TIMES); }
 "=" { return symbol(sym.BECOMES); }
 "&&" { return symbol(sym.AND); }
 "!" { return symbol(sym.NOT); }
-"<" { return symbol(sym.LTE); }
+"<" { return symbol(sym.LT); }
 
 /* delimiters */
 "(" { return symbol(sym.LPAREN); }
@@ -154,6 +159,7 @@ white = {eol}|[ \t]
 "{" { return symbol(sym.LBRACE); }
 "}" { return symbol(sym.RBRACE); }
 ";" { return symbol(sym.SEMICOLON); }
+"," { return symbol(sym.COMMA); }
 
 /* number */
 (\+|\-)?0|[1-9]{digit}* {
@@ -169,13 +175,16 @@ white = {eol}|[ \t]
 /* whitespace */
 {white}+ { /* ignore whitespace */ }
 
+/* comments */
+"//"[^\n]\n { /* */ }
+
 /* beyond-of-scope handling */
 "."{digit}* {
     System.err.printf("%nLine %d, Column %d", yyline+1,yycolumn+1);
     System.err.printf("%nWarning:Minijava does not support floating-point numbers.%n");
 }
 
-"\""[^"\"".]"\"" {
+"\""[^"\""]"\"" {
   System.err.printf("%nLine %d, Column %d", yyline+1,yycolumn+1);
   System.err.printf("%nWarning:Minijava does not support Strings.%n");
 }

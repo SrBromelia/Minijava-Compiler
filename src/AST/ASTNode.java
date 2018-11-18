@@ -11,4 +11,8 @@ abstract public class ASTNode {
   public ASTNode(Location pos) {
     this.line_number = pos.getLine();
   }
+
+  public ASTNode() {
+  	this.line_number = -1;
+  }
 }

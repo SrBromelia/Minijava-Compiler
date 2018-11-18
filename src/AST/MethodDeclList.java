@@ -12,6 +12,11 @@ public class MethodDeclList extends ASTNode {
       list = new ArrayList<MethodDecl>();
    }
 
+   public MethodDeclList() {
+      super();
+      list = new ArrayList<MethodDecl>();
+   }
+
    public void add(MethodDecl n) {
       list.add(n);
    }

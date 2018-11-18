@@ -44,8 +44,11 @@ class Minijava
             Symbol t = s.next_token();
             while (t.sym != sym.EOF){ 
                 // print each token that we scan
+                String token = s.symbolToString(t);
                 System.out.print(s.symbolToString(t) + " ");
-                if(s.symbolToString(t).equals("SEMICOLON"))
+                if(token.equals("SEMICOLON") ||
+                   token.equals("LBRACE") ||
+                   token.equals("RBRACE"))
                 	System.out.println("");
                 t = s.next_token();
             }

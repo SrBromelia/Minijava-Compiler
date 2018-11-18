@@ -66,6 +66,7 @@
     <javac srcdir="src" destdir="build/classes" classpath="lib/java-cup-11b.jar"
            debug="true"
            includeAntRuntime="false">
+           <compilerarg value="-Xdiags:verbose"/>
       <!-- <compilerarg value="-Xlint:unchecked"/> -->
     </javac>
   </target>

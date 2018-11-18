@@ -12,6 +12,11 @@ public class ClassDeclList extends ASTNode{
       list = new ArrayList<ClassDecl>();
    }
 
+   public ClassDeclList() {
+      super();
+      list = new ArrayList<ClassDecl>();
+   }
+
    public void add(ClassDecl n) {
       list.add(n);
    }

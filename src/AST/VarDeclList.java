@@ -12,6 +12,11 @@ public class VarDeclList extends ASTNode {
       list = new ArrayList<VarDecl>();
    }
 
+   public VarDeclList() {
+      super();
+      list = new ArrayList<VarDecl>();
+   }
+
    public void add(VarDecl n) {
       list.add(n);
    }
