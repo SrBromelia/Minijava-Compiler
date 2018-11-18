@@ -154,11 +154,11 @@ Statement   ::= LBRACE StatementList:sl RBRACE //{Stmt}
                 {: RESULT = new Print(e,exleft); :}
             | IF:iff LPAREN Expression:e RPAREN Statement:s_if ELSE Statement:s_else //if(Exp)Stmt else Stmt
                 {: RESULT = new If(e,s_if,s_else,iffxleft);  :}
-            | AssignStatement:s
+            | AssignStatement:s //Id=Exp
                 {: RESULT = s; :}
-            | ArrayAssign:s
+            | ArrayAssign:s //Id[Exp]=Exp
                 {: RESULT = s; :}
-            | DisplayStatement:s
+            | DisplayStatement:s //Display Exp - Precisa ser removido
                 {: RESULT = s; :};
 
 AssignStatement ::= Identifier:id BECOMES Expression:expr SEMICOLON
