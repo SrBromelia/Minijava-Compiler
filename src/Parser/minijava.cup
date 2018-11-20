@@ -140,10 +140,11 @@ Formal ::= Type:t IDENTIFIER:a
             {: Identifier id = new Identifier(a,axleft);
                RESULT = new Formal(t,id,txleft); :};
 
-StatementList ::= 
-            {: StatementList p = new StatementList();
+StatementList ::= Statement:s
+            {: StatementList p = new StatementList(sxleft);
+               p.add(s);
                RESULT = p; :}
-        | Statement:s StatementList:p
+        | StatementList:p Statement:s
             {: p.add(s); RESULT = p; :};
 
 Statement   ::= LBRACE StatementList:sl RBRACE //{Stmt}
