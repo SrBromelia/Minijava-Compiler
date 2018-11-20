@@ -3,9 +3,6 @@ class Main
 {
 	public static void main(String[] args)
 	{
-		display a;
-		display b;
-		display c;
 
 		a = 3.length;
 		b = foo.foo(a,b,c);

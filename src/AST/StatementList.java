@@ -21,6 +21,10 @@ public class StatementList extends ASTNode {
       list.add(n);
    }
 
+   public void add(int index, Statement n) {
+      list.add(index,n);
+   }
+
    public Statement get(int i)  { 
       return list.get(i); 
    }

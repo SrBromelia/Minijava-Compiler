@@ -2,9 +2,11 @@ class Main
 {
 	public static void main(String[] args)
 	{
-		display a;
-		display b;
-		display c;
+		a[1] = 3;
+		System.out.println(new ClassOne().methodOne(1));
+		System.out.println(1+2*3+4-5);
+		System.out.println(!true);
+		System.out.println(a[3]);
 	}
 }
 
@@ -12,7 +14,12 @@ class ClassOne
 {
 	public int methodOne(int a)
 	{
-		a = i[3];
+		int[] a;
+		a = new int[3];
+
+		i = a.length;
+		while(1 < i)
+			a = a+1;
 		return a;
 	}
 }

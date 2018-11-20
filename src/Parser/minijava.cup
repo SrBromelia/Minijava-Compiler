@@ -75,7 +75,7 @@ Program ::= MainClass:mc ClassDeclList:cdl
 
 MainClass ::= CLASS IDENTIFIER:a LBRACE
               PUBLIC MAIN LPAREN STRING LBRACK RBRACK IDENTIFIER:b RPAREN
-              LBRACE Statement:s RBRACE RBRACE
+              Statement:s RBRACE
             {:  Identifier cl = new Identifier(a,axleft);
                 Identifier ag = new Identifier(b,bxleft);
                 RESULT = new MainClass(cl, ag, s, axleft); :};
@@ -123,21 +123,22 @@ MethodDecl ::= PUBLIC Type:t IDENTIFIER:a LPAREN FormalList:fl RPAREN LBRACE
                VarDeclList:vdl StatementList:sl RETURN Expression:e SEMICOLON RBRACE
             {: Identifier m = new Identifier(a,axleft);
                RESULT = new MethodDecl(t,m,fl,vdl,sl,e,txleft); :}
-        | PUBLIC:p Type:t IDENTIFIER:a LPAREN RPAREN LBRACE
-                VarDeclList:vdl StatementList:sl RETURN Expression:e SEMICOLON RBRACE
+        | PUBLIC:p Type:t IDENTIFIER:a LPAREN FormalList:fl RPAREN LBRACE
+                VarDeclList:vdl RETURN Expression:e SEMICOLON RBRACE
             {:  Identifier m = new Identifier(a,axleft);
-                RESULT = new MethodDecl(t,m,new FormalList(), vdl, sl, e,pxleft); :};
+                RESULT = new MethodDecl(t,m,fl, vdl, new StatementList(), e,pxleft); :};
 
-FormalList ::= Formal:f
-            {: FormalList fl = new FormalList(fxleft);
-               fl.add(f);
-               RESULT = fl; :}
-        | FormalList:fl COMMA Formal:f
+FormalList ::= 
+            {: RESULT = new FormalList(); :}
+        | FormalList:fl Formal:f
             {: fl.add(f);
                RESULT = fl; :};
 
 Formal ::= Type:t IDENTIFIER:a
             {: Identifier id = new Identifier(a,axleft);
+               RESULT = new Formal(t,id,txleft); :}
+        | Type:t IDENTIFIER:a COMMA
+             {: Identifier id = new Identifier(a,axleft);
                RESULT = new Formal(t,id,txleft); :};
 
 StatementList ::= Statement:s
@@ -189,7 +190,7 @@ Expression ::= IDENTIFIER:name //id
         | FALSE:f //false
             {: RESULT = new False(fxleft); :}
         | NOT Expression:e //!Exp
-            {: RESULT = e; :}
+            {: RESULT = new Not(e,exleft); :}
         | THIS:t //This
             {: RESULT = new This(txleft); :}
         | NEW:n INT LBRACK Expression:e RBRACK //new int[INT]
