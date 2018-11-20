@@ -1,8 +1,10 @@
-package AST.Visitor.SemanticCheck.SymbolTable;
+package SemanticCheck.SymbolTable;
 
 import java.util.HashMap;
+import java.util.Set;
+import SemanticCheck.SymbolTable.SymbolTableVisitor;
 
-class GlobalSymbolTable
+public class GlobalSymbolTable
 {
 	private HashMap<String,ClassSymbolTable> classes;
 
@@ -11,9 +13,9 @@ class GlobalSymbolTable
 		classes = new HashMap<String,ClassSymbolTable>();
 	}
 
-	public boolean addClass(String key, ClassSymbolTable value)
+	public boolean addClass(String key)
 	{
-		ClassSymbolTable ret = classes.putIfAbsent(key,value);
+		ClassSymbolTable ret = classes.putIfAbsent(key,new ClassSymbolTable(key));
 
 		return ret==null;
 	}
@@ -26,6 +28,16 @@ class GlobalSymbolTable
 	public ClassSymbolTable getClass(String key)
 	{
 		return classes.get(key);
+	}
+
+	public Set<String> getClasses()
+	{
+		return classes.keySet();
+	}
+
+	public int getSize()
+	{
+		return classes.size();
 	}
 
 	public boolean checkVarScope(String varName, String methodName, String className)
@@ -41,5 +53,10 @@ class GlobalSymbolTable
 			return true;
 
 		return false;
+	}
+
+	public void accept(SymbolTableVisitor v)
+	{
+		v.visit(this);
 	}
 }

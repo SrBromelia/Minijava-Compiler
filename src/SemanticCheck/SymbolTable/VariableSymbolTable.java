@@ -1,4 +1,6 @@
-package AST.Visitor.SemanticCheck.SymbolTable;
+package SemanticCheck.SymbolTable;
+
+import SemanticCheck.SymbolTable.SymbolTableVisitor;
 
 public class VariableSymbolTable
 {
@@ -19,5 +21,10 @@ public class VariableSymbolTable
 	public String getType()
 	{
 		return type;
+	}
+
+	public void accept(SymbolTableVisitor v)
+	{
+		v.visit(this);
 	}
 }

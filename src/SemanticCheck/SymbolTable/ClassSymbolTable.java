@@ -1,6 +1,8 @@
-package AST.Visitor.SemanticCheck.SymbolTable;
+package SemanticCheck.SymbolTable;
 
 import java.util.HashMap;
+import java.util.Set;
+import SemanticCheck.SymbolTable.SymbolTableVisitor;
 
 public class ClassSymbolTable
 {
@@ -65,6 +67,16 @@ public class ClassSymbolTable
 		return methods.get(key);
 	}
 
+	public Set<String> getMethods()
+	{
+		return methods.keySet();
+	}
+
+	public Set<String> getAttrs()
+	{
+		return attributes.keySet();
+	}
+
 	public VariableSymbolTable getAttr(String key)
 	{
 		return attributes.get(key);
@@ -75,5 +87,10 @@ public class ClassSymbolTable
 		MethodSymbolTable m = methods.get(key);
 
 		return m.getType();
+	}
+
+	public void accept(SymbolTableVisitor v)
+	{
+		v.visit(this);
 	}
 }
