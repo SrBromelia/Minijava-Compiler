@@ -7,9 +7,9 @@ import java.util.*;
 
 public class MainClass extends ASTNode{
   public Identifier i1,i2;
-  public StatementList sl;
+  public Statement sl;
 
-  public MainClass(Identifier ai1, Identifier ai2, StatementList asl,
+  public MainClass(Identifier ai1, Identifier ai2, Statement asl,
                    Location pos) {
     super(pos);
     i1=ai1; i2=ai2; sl=asl;

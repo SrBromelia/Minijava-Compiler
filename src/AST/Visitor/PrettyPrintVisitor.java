@@ -32,12 +32,7 @@ public class PrettyPrintVisitor implements Visitor {
     System.out.println(" {");
     System.out.print("  public static void main (String [] ");
     n.i2.accept(this);
-    System.out.println(") {");
-    for ( int i = 0; i < n.sl.size(); i++ ) {
-        System.out.print("    ");
-        n.sl.get(i).accept(this);
-        if ( i < n.sl.size() ) { System.out.println(""); }
-    }
+    n.sl.accept(this);
     System.out.println("  }");
     System.out.println("}");
   }

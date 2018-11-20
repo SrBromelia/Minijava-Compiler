@@ -75,10 +75,10 @@ Program ::= MainClass:mc ClassDeclList:cdl
 
 MainClass ::= CLASS IDENTIFIER:a LBRACE
               PUBLIC MAIN LPAREN STRING LBRACK RBRACK IDENTIFIER:b RPAREN
-              LBRACE StatementList:sl RBRACE RBRACE
+              LBRACE Statement:s RBRACE RBRACE
             {:  Identifier cl = new Identifier(a,axleft);
                 Identifier ag = new Identifier(b,bxleft);
-                RESULT = new MainClass(cl, ag, sl, axleft); :};
+                RESULT = new MainClass(cl, ag, s, axleft); :};
 
 ClassDeclList ::=
             {: ClassDeclList cdl = new ClassDeclList();
