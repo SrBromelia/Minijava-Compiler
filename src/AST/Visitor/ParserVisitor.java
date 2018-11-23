@@ -319,7 +319,8 @@ public class ParserVisitor implements Visitor
 		n.i.accept(this);
 		System.out.print("(");
 
-		n.el.get(0).accept(this);
+		if(n.el.size()>0)
+			n.el.get(0).accept(this);
 		for(int i=1;i<n.el.size();i++)
 		{
 			System.out.print(", ");
