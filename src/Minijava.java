@@ -7,6 +7,7 @@ import java_cup.runtime.Symbol;
 import java_cup.runtime.ComplexSymbolFactory;
 import java.util.*;
 import java.io.*;
+import java.util.ArrayList;
 
 class Minijava
 {
@@ -133,9 +134,15 @@ class Minijava
             root = p.parse();
             Program program = (Program)root.value;
             SymbolTableCreatorVisitor visitor = new SymbolTableCreatorVisitor();
+            TypeCheckVisitor visitor2 = new TypeCheckVisitor();
             program.accept(visitor);
             GlobalSymbolTable table = visitor.getTable();
-            table.accept(new SymbolTablePrinterVisitor());
+            //table.accept(new SymbolTablePrinterVisitor());
+            program.accept(visitor2);
+            
+            for(String err: visitor2.getErrors())
+                System.out.println(err);
+
             System.out.println("\n");
             System.out.print("\nParsing completed"); 
         } catch (Exception e) {

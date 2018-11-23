@@ -1,5 +1,6 @@
 package SemanticCheck.SymbolTable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import SemanticCheck.SymbolTable.SymbolTableVisitor;
@@ -8,7 +9,7 @@ public class MethodSymbolTable
 {
 	private final String methodName;
 	private final String returnType;
-	private HashMap <String,VariableSymbolTable> parameters;
+	private ArrayList <VariableSymbolTable> parameters;
 	private HashMap <String,VariableSymbolTable> variables;
 
 	public MethodSymbolTable(String methodName, String returnType)
@@ -16,15 +17,13 @@ public class MethodSymbolTable
 		this.methodName = methodName;
 		this.returnType = returnType;
 
-		parameters = new HashMap<String,VariableSymbolTable>();
+		parameters = new ArrayList<VariableSymbolTable>();
 		variables = new HashMap<String,VariableSymbolTable>();
 	}
 
 	public boolean addParam(String id, String type)
 	{
-		VariableSymbolTable ret = parameters.putIfAbsent(id, new VariableSymbolTable(id,type));
-
-		return ret==null;
+		return parameters.add(new VariableSymbolTable(id,type));
 	}
 
 	public boolean addVar(String id, String type)
@@ -36,7 +35,11 @@ public class MethodSymbolTable
 
 	public boolean containsParam(String key)
 	{
-		return parameters.containsKey(key);
+		for(int i=0;i<parameters.size();i++)
+			if(parameters.get(i).getID().equals(key))
+				return true;
+
+		return false;
 	}
 
 	public boolean containsVar(String key)
@@ -49,9 +52,14 @@ public class MethodSymbolTable
 		return methodName;
 	}
 
-	public Set<String> getParams()
+	public ArrayList<String> getParams()
 	{
-		return parameters.keySet();
+		ArrayList<String> params = new ArrayList<String>();
+
+		for(VariableSymbolTable param : parameters)
+			params.add(param.getID());
+
+		return params;
 	}
 
 	public Set<String> getVars()
@@ -66,7 +74,9 @@ public class MethodSymbolTable
 
 	public VariableSymbolTable getParam(String key)
 	{
-		return parameters.get(key);
+		int ret = getParams().indexOf(key);
+
+		return parameters.get(ret);
 	}
 
 	public VariableSymbolTable getVar(String key)

@@ -11,7 +11,6 @@ public class SymbolTableCreatorVisitor implements Visitor
 
 	public SymbolTableCreatorVisitor()
 	{
-		table = new GlobalSymbolTable();
 		currentClass=null;
 		currentMethod=null;
 	}
@@ -35,11 +34,16 @@ public class SymbolTableCreatorVisitor implements Visitor
 
 	public void visit(Program n)
 	{
+		n.m.accept(this);
 		for(int i=0;i<n.cl.size();i++)
 			n.cl.get(i).accept(this);
 	}
 
-	public void visit(MainClass n) {}
+	public void visit(MainClass n)
+	{
+		table = new GlobalSymbolTable(n.i1.s);
+		table.addClass(n.i1.s);
+	}
 
 	public void visit(ClassDeclSimple n)
 	{
@@ -55,7 +59,7 @@ public class SymbolTableCreatorVisitor implements Visitor
 
 	public void visit(ClassDeclExtends n)
 	{
-		table.addClass(n.i.s);
+		table.addClass(n.i.s, n.j.s);
 		currentClass = table.getClass(n.i.s);
 
 		for(int i=0;i<n.vl.size();i++)

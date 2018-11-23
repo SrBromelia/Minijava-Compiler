@@ -1,3 +1,5 @@
+package Exceptions;
+
 public class MissingSymbolException extends Exception
 {
 	private String symbol;
@@ -10,5 +12,10 @@ public class MissingSymbolException extends Exception
 	public String toString()
 	{
 		return String.format("MissingSymbolException: The Symbol '%s' was not declared within the scope", symbol);
+	}
+
+	public String toString(String msg)
+	{
+		return msg;
 	}
 }

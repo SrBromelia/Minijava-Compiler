@@ -1,3 +1,5 @@
+package Exceptions;
+
 public class DoubleDeclarationSymbolException extends Exception
 {
 	private String symbol;

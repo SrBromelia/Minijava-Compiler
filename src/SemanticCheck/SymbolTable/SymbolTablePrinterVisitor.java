@@ -1,6 +1,7 @@
 package SemanticCheck.SymbolTable;
 
 import java.util.Set;
+import java.util.ArrayList;
 
 public class SymbolTablePrinterVisitor implements SymbolTableVisitor
 {
@@ -34,7 +35,10 @@ public class SymbolTablePrinterVisitor implements SymbolTableVisitor
 
 	public void visit(ClassSymbolTable t)
 	{
-		System.out.printf("%sClass %s\n", ident(),t.getName());
+		if(!t.isChild())
+			System.out.printf("%sClass %s\n", ident(),t.getName());
+		else
+			System.out.printf("%sClass %s, inherits from %s\n", ident(),t.getName(),t.getParent().getName());
 
 		ident++;
 		for(String ct : t.getAttrs())

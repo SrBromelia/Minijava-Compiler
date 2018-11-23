@@ -6,12 +6,22 @@ import SemanticCheck.SymbolTable.SymbolTableVisitor;
 
 public class ClassSymbolTable
 {
+	private ClassSymbolTable parent;
 	private final String className;
 	private HashMap<String,VariableSymbolTable> attributes;
 	private HashMap<String,MethodSymbolTable> methods;
 
 	public ClassSymbolTable(String className)
 	{
+		parent = null;
+		this.className = className;
+		attributes = new HashMap<String,VariableSymbolTable>();
+		methods = new HashMap<String,MethodSymbolTable>();
+	}
+
+	public ClassSymbolTable(String className, ClassSymbolTable parent)
+	{
+		this.parent = parent;
 		this.className = className;
 		attributes = new HashMap<String,VariableSymbolTable>();
 		methods = new HashMap<String,MethodSymbolTable>();
@@ -52,7 +62,7 @@ public class ClassSymbolTable
 		return attributes.containsKey(key);
 	}
 
-	public boolean constainsMethod(String key)
+	public boolean containsMethod(String key)
 	{
 		return methods.containsKey(key);
 	}
@@ -65,6 +75,16 @@ public class ClassSymbolTable
 	public MethodSymbolTable getMethod(String key)
 	{
 		return methods.get(key);
+	}
+
+	public boolean isChild()
+	{
+		return parent!=null;
+	}
+
+	public ClassSymbolTable getParent()
+	{
+		return parent;
 	}
 
 	public Set<String> getMethods()
@@ -80,13 +100,6 @@ public class ClassSymbolTable
 	public VariableSymbolTable getAttr(String key)
 	{
 		return attributes.get(key);
-	}
-
-	public String getMethodType(String key)
-	{
-		MethodSymbolTable m = methods.get(key);
-
-		return m.getType();
 	}
 
 	public void accept(SymbolTableVisitor v)
