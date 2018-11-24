@@ -137,8 +137,8 @@ class Minijava
             TypeCheckVisitor visitor2 = new TypeCheckVisitor();
             program.accept(visitor);
             GlobalSymbolTable table = visitor.getTable();
-            //table.accept(new SymbolTablePrinterVisitor());
-            program.accept(visitor2);
+            table.accept(new SymbolTablePrinterVisitor());
+            //program.accept(visitor2);
             
             for(String err: visitor2.getErrors())
                 System.out.println(err);

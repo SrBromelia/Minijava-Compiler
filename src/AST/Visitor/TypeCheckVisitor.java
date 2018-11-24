@@ -36,23 +36,24 @@ public class TypeCheckVisitor implements Visitor
 
 	private String getType(Exp e)
 	{
+		e.accept(this);
+		for(int i=0;i<errors.size();i++)
+			System.out.println(i+":"+errors.get(i));
+
 		switch(e.getClass().getSimpleName())
 		{
 			case "True":
 			case "False":
-				return "boolean";
-
+			case "And":
 			case "Not":
-				Not no = (Not) e;
-
-				System.out.println(no.e.getClass().getSimpleName());
-				if(getType(no.e).equals("boolean"))
-					return "boolean";
-				break;
+				return "boolean";
 
 			case "IntegerLiteral":
 			case "ArrayLength":
 			case "ArrayLookup":
+			case "Plus":
+			case "Minus":
+			case "Times":
 				return "int";
 
 			case "NewObject":
@@ -68,7 +69,6 @@ public class TypeCheckVisitor implements Visitor
 				Call c = (Call) e;
 				String s = getType(c.e);
 
-				System.out.println(e.line_number);
 				if(s.equals("int")||s.equals("boolean")||s.equals("int[]"))
 					return null;
 
@@ -77,31 +77,11 @@ public class TypeCheckVisitor implements Visitor
 			case "IdentifierExp":
 				IdentifierExp i = (IdentifierExp) e;
 				return table.getType(i.s,currentMethod,currentClass);
-
-			case "And":
-				And a = (And) e;
-				if(getType(a.e1).equals(getType(a.e2)))
-					return getType(a.e1);
-				break;
-
-			case "Plus":
-				Plus p = (Plus) e;
-				if(getType(p.e1).equals(getType(p.e2)))
-					return getType(p.e1);
-				break;
-
-			case "Minus":
-				Minus m = (Minus) e;
-				if(getType(m.e1).equals(getType(m.e2)))
-					return getType(m.e1);
-				break;
-			case "Times":
-				Times t = (Times) e;
-				if(getType(t.e1).equals(getType(t.e2)))
-					return getType(t.e1);
-				break;
 		}
 
+		System.out.print("Error: expression '");
+		e.accept(new PrettyPrintVisitor());
+		System.out.println("'returned as 'null'");
 		return null;
 	}
 
@@ -224,9 +204,9 @@ public class TypeCheckVisitor implements Visitor
 		n.e2.accept(this);
 
 		if(!getType(n.e1).equals("int"))
-			System.out.println(String.format("Sem. error in line %d: value inside [] must be 'int'.", n.line_number));
+			errors.add(String.format("Sem. error in line %d: value inside [] must be 'int'.", n.line_number));
 		if(!getType(n.e2).equals("int"))
-			System.out.println(String.format("Sem. error in line %d: assigned value must be 'int'.", n.line_number));
+			errors.add(String.format("Sem. error in line %d: assigned value must be 'int'.", n.line_number));
 	}
 
 	public void visit(And n)
@@ -313,12 +293,23 @@ public class TypeCheckVisitor implements Visitor
 	{
 		n.e.accept(this);
 
+		for(int i=0;i<n.el.size();i++)
+			n.el.get(i).accept(this);
+
 		if(n.e instanceof IdentifierExp)
 		{
 			IdentifierExp e = (IdentifierExp) n.e;
 
-			if(!table.getType(e.s,currentMethod,currentClass).equals(getType(e)))
-				errors.add(String.format("Sem. error in line %d: only objects posses methods.", n.line_number));
+			switch(table.getType(e.s,currentMethod,currentClass))
+			{
+				case "int":
+				case "int[]":
+				case "boolean":
+					errors.add(String.format("Sem. error in line %d: only objects posses methods.", n.line_number));
+					break;
+			}
+			refClass = getType(e);
+			n.i.accept(this);
 		}
 		else if(n.e instanceof NewObject)
 		{
@@ -330,8 +321,17 @@ public class TypeCheckVisitor implements Visitor
 		{
 			n.i.accept(this);
 		}
+		else if(n.e instanceof Not)
+		{
+			Not e = (Not) n.e;
+
+			new Call(e.e,n.i,n.el,new java_cup.runtime.ComplexSymbolFactory.Location(n.line_number,0)).accept(this);
+		}
 		else
+		{
+			System.out.println(n.e.getClass().getSimpleName());
 			errors.add(String.format("Sem. error in line %d: only objects posses methods.", n.line_number));
+		}
 	}
 
 	public void visit(IntegerLiteral n) {}
@@ -357,7 +357,7 @@ public class TypeCheckVisitor implements Visitor
 	//Checa se a expressão é inteira
 	public void visit(NewArray n)
 	{
-
+		n.e.accept(this);
 	}
 
 	//Checa se há uma classe com o nome dado
